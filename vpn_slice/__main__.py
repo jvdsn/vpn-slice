@@ -107,13 +107,11 @@ def names_for(host, domains, short=True, long=True):
 ########################################
 
 def do_pre_init(env, args):
-    global providers
     if 'prep' in providers:
         providers.prep.create_tunnel()
         providers.prep.prepare_tunnel()
 
 def do_disconnect(env, args):
-    global providers
     for pidfile in args.kill:
         try:
             pid = int(open(pidfile).read())
@@ -163,7 +161,6 @@ def do_disconnect(env, args):
 
 
 def do_connect(env, args):
-    global providers
     if args.banner and env.banner:
         print("Connect Banner:")
         for l in env.banner.splitlines(): print("| "+l)
@@ -256,7 +253,6 @@ def do_connect(env, args):
 
 
 def do_post_connect(env, args):
-    global providers
     # lookup named hosts for which we need routes and/or host_map entries
     # (the DNS/NBNS servers already have their routes)
     ip_routes = set()
@@ -391,7 +387,6 @@ vpncenv = [
 ]
 
 def parse_env(environ=os.environ):
-    global vpncenv
     env = slurpy()
     for var, envar, maker, *default in vpncenv:
         if envar in environ:
@@ -528,8 +523,6 @@ def parse_args_and_env(args=None, environ=os.environ):
     return p, args, env
 
 def finalize_args_and_env(args, env):
-    global providers
-
     # autodetect parent or grandparent process (skipping intermediary shell)
     if args.ppid is None:
         args.ppid = providers.process.ppid_of(None)
